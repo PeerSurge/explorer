@@ -1,0 +1,132 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-12
+        h2 Peercoin Staking Activity Analytics
+        p.text-muted Shows PoS blocks per hour, PoW blocks per day, stake weight trends, and time between PoS blocks (last #{stats.sampleSize} blocks).
+        .card.card-default.mb-4
+          .card-header.bg-success.text-white
+            h5.card-title Staking Activity Summary
+          .card-body
+            ul.list-unstyled
+              li
+                strong PoS Blocks per Hour:
+                span= stats.posPerHour ? stats.posPerHour.toFixed(2) : 'N/A'
+              li
+                strong PoW Blocks per Day:
+                span= stats.powPerDay ? stats.powPerDay.toFixed(2) : 'N/A'
+              li
+                strong Average Stake Weight:
+                span= stats.avgStakeWeight ? stats.avgStakeWeight.toLocaleString('en',{'maximumFractionDigits':2}) : 'N/A'
+              li
+                strong Average Time Between PoS Blocks:
+                span= stats.avgPosInterval ? (stats.avgPosInterval/60).toFixed(2) + ' min' : 'N/A'
+              li
+                strong Total PoS Blocks:
+                span= stats.posCount
+              li
+                strong Total PoW Blocks:
+                span= stats.powCount
+        // Charts Section
+        .row.mt-4
+          .col-md-6
+            .card.card-default
+              .card-header.bg-info.text-white
+                h5.card-title PoS Block Intervals (minutes)
+              .card-body
+                #posIntervalChart(style='height:300px;width:100%;')
+          .col-md-6
+            .card.card-default
+              .card-header.bg-info.text-white
+                h5.card-title Stake Weight Trend
+              .card-body
+                #stakeWeightChart(style='height:300px;width:100%;')
+        .row.mt-4
+          .col-md-6
+            .card.card-default
+              .card-header.bg-info.text-white
+                h5.card-title PoS Blocks per Hour
+              .card-body
+                #posPerHourChart(style='height:300px;width:100%;')
+          .col-md-6
+            .card.card-default
+              .card-header.bg-info.text-white
+                h5.card-title PoW Blocks per Day
+              .card-body
+                #powPerDayChart(style='height:300px;width:100%;')
+        script.
+          $(function(){
+            // Prepare chart data
+            var blocks = !{JSON.stringify(blocks)};
+            var posBlocks = blocks.filter(b => b && b.block_type === 'PoS');
+            var powBlocks = blocks.filter(b => b && b.block_type === 'PoW');
+            // PoS block intervals
+            var posTimes = posBlocks.map(b => b.time);
+            var posIntervals = posTimes.slice(1).map((t,i) => (t - posTimes[i])/60);
+            $.jqplot('posIntervalChart', [posIntervals], {
+              title: 'PoS Block Intervals (min)',
+              axes: { xaxis: { label: 'Block', pad: 1 }, yaxis: { label: 'Interval (min)' } },
+              series:[{ showLine:true, markerOptions:{ style:'circle' } }],
+              grid: { borderWidth: 1, shadow: false }
+            });
+            // Stake weight trend
+            var stakeWeights = posBlocks.map(b => b.stake_weight || 0);
+            $.jqplot('stakeWeightChart', [stakeWeights], {
+              title: 'Stake Weight Trend',
+              axes: { xaxis: { label: 'PoS Block', pad: 1 }, yaxis: { label: 'Stake Weight' } },
+              series:[{ showLine:true, markerOptions:{ style:'circle' } }],
+              grid: { borderWidth: 1, shadow: false }
+            });
+            // PoS blocks per hour
+            var posPerHour = [];
+            var hourBuckets = {};
+            posBlocks.forEach(function(b){
+              var hour = Math.floor(b.time/3600);
+              hourBuckets[hour] = (hourBuckets[hour]||0)+1;
+            });
+            Object.keys(hourBuckets).sort().forEach(function(h){ posPerHour.push(hourBuckets[h]); });
+            $.jqplot('posPerHourChart', [posPerHour], {
+              title: 'PoS Blocks per Hour',
+              axes: { xaxis: { label: 'Hour', pad: 1 }, yaxis: { label: 'PoS Blocks' } },
+              series:[{ showLine:true, markerOptions:{ style:'circle' } }],
+              grid: { borderWidth: 1, shadow: false }
+            });
+            // PoW blocks per day
+            var powPerDay = [];
+            var dayBuckets = {};
+            powBlocks.forEach(function(b){
+              var day = Math.floor(b.time/86400);
+              dayBuckets[day] = (dayBuckets[day]||0)+1;
+            });
+            Object.keys(dayBuckets).sort().forEach(function(d){ powPerDay.push(dayBuckets[d]); });
+            $.jqplot('powPerDayChart', [powPerDay], {
+              title: 'PoW Blocks per Day',
+              axes: { xaxis: { label: 'Day', pad: 1 }, yaxis: { label: 'PoW Blocks' } },
+              series:[{ showLine:true, markerOptions:{ style:'circle' } }],
+              grid: { borderWidth: 1, shadow: false }
+            });
+          });
+        .card.card-default
+          .card-header.bg-info.text-white
+            h5.card-title Recent Block Activity
+          .card-body
+            table.table.table-striped.table-bordered
+              thead
+                tr
+                  th Height
+                  th Hash
+                  th Type
+                  th Stake Weight
+                  th Time
+              tbody
+                each block in blocks
+                  if block
+                    tr
+                      td= block.height
+                      td
+                        a(href='/block/' + block.hash)= block.hash
+                      td= block.block_type
+                      td= block.stake_weight ? block.stake_weight.toLocaleString('en',{'maximumFractionDigits':2}) : '—'
+                      td= format_unixtime(block.time)

@@ -152,6 +152,11 @@ html
               a.nav-link(href='/richlist')
                 span.fa.fa-btc
                 span.menu-text #{settings.locale.menu_richlist}
+          // Staking Activity nav link
+          li#staking-activity
+            a.nav-link(href='/staking-activity')
+              span.fa.fa-leaf
+              span.menu-text Staking Activity
           if settings.display.markets == true
             li#markets
               a.nav-link.loading(href='/markets/'+settings.markets.default)

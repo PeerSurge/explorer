@@ -1,3 +1,72 @@
+// Peercoin Staking Activity Analytics
+router.get('/staking-activity', async function(req, res) {
+  const lib = require('../lib/explorer');
+  const numBlocks = 500;
+  lib.get_blockcount(async function(blockcount) {
+    let heights = [];
+    for (let h = blockcount - 1; h >= Math.max(0, blockcount - numBlocks); h--) {
+      heights.push(h);
+    }
+    let blocks = [];
+    let processed = 0;
+    if (heights.length === 0) return res.render('staking_activity', { blocks: [], stats: {} });
+    for (let idx = 0; idx < heights.length; idx++) {
+      await new Promise(resolve => {
+        lib.get_blockhash(heights[idx], function(hash) {
+          if (hash && hash !== 'There was an error. Check your console.') {
+            lib.get_block(hash, function(block) {
+              let block_type = 'Unknown';
+              if (block && block.flags) {
+                if (block.flags.toLowerCase().includes('proof-of-stake')) {
+                  block_type = 'PoS';
+                } else if (block.flags.toLowerCase().includes('proof-of-work')) {
+                  block_type = 'PoW';
+                }
+              }
+              blocks[idx] = {
+                height: block.height,
+                hash: block.hash,
+                block_type: block_type,
+                tx_count: block.tx ? block.tx.length : 0,
+                size: block.size,
+                time: block.time,
+                stake_weight: block.stakeweight || null
+              };
+              processed++;
+              resolve();
+            });
+          } else {
+            processed++;
+            resolve();
+          }
+        });
+      });
+    }
+    // Analytics
+    const now = Math.floor(Date.now() / 1000);
+    let posBlocks = blocks.filter(b => b && b.block_type === 'PoS');
+    let powBlocks = blocks.filter(b => b && b.block_type === 'PoW');
+    let posPerHour = posBlocks.length / ((blocks[0].time - blocks[blocks.length-1].time) / 3600);
+    let powPerDay = powBlocks.length / ((blocks[0].time - blocks[blocks.length-1].time) / 86400);
+    let stakeWeights = posBlocks.map(b => b.stake_weight).filter(w => w);
+    let avgStakeWeight = stakeWeights.length ? (stakeWeights.reduce((a,b) => a+b,0) / stakeWeights.length) : null;
+    let posTimes = posBlocks.map(b => b.time);
+    let posIntervals = posTimes.slice(1).map((t,i) => t - posTimes[i]);
+    let avgPosInterval = posIntervals.length ? (posIntervals.reduce((a,b) => a+b,0) / posIntervals.length) : null;
+    res.render('staking_activity', {
+      blocks,
+      stats: {
+        posPerHour,
+        powPerDay,
+        avgStakeWeight,
+        avgPosInterval,
+        posCount: posBlocks.length,
+        powCount: powBlocks.length,
+        sampleSize: blocks.length
+      }
+    });
+  });
+});
 // Visible richlist delta view
 router.get('/richlist/delta/view', async function(req, res) {
   const Address = require('../models/address');
