@@ -1,3 +1,12 @@
+// Raw transaction JSON view for developers
+router.get('/tx/:txid/raw', function(req, res) {
+  lib.get_rawtransaction(req.params.txid, function(rawtx) {
+    if (!rawtx || rawtx === 'There was an error. Check your console.') {
+      return res.status(404).json({ error: 'Transaction not found or RPC error.' });
+    }
+    res.json(rawtx);
+  });
+});
 // Health check endpoint for monitoring
 router.get('/health', async function(req, res) {
   // Check RPC connectivity
