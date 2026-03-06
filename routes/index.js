@@ -1,3 +1,39 @@
+// API: Explorer version, commit hash, Peercoin RPC version
+router.get('/api/version', async function(req, res) {
+  const lib = require('../lib/explorer');
+  const fs = require('fs');
+  // Get explorer version from package.json
+  let explorerVersion = null;
+  try {
+    const pkg = JSON.parse(fs.readFileSync(__dirname + '/../package.json', 'utf8'));
+    explorerVersion = pkg.version;
+  } catch (e) {
+    explorerVersion = null;
+  }
+  // Get commit hash from .git/HEAD and .git/refs/heads/*
+  let commitHash = null;
+  try {
+    const headPath = __dirname + '/../.git/HEAD';
+    const head = fs.readFileSync(headPath, 'utf8').trim();
+    if (head.startsWith('ref:')) {
+      const ref = head.split(' ')[1];
+      const refPath = __dirname + '/../.git/' + ref;
+      commitHash = fs.readFileSync(refPath, 'utf8').trim();
+    } else {
+      commitHash = head;
+    }
+  } catch (e) {
+    commitHash = null;
+  }
+  // Get Peercoin RPC version
+  let rpcinfo = await lib.resilientRpcCall('getrpcinfo', [], {});
+  let peercoinRpcVersion = rpcinfo && rpcinfo.version ? rpcinfo.version : null;
+  res.json({
+    explorer_version: explorerVersion,
+    commit_hash: commitHash,
+    peercoin_rpc_version: peercoinRpcVersion
+  });
+});
 // Mempool page for Peercoin
 router.get('/mempool', async function(req, res) {
   const lib = require('../lib/explorer');
