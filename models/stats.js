@@ -10,7 +10,6 @@ var StatsSchema = new Schema({
   supply: { type: Number, default: 0 },
   //last_txs: { type: Array, default: [] },
   connections: { type: Number, default: 0 },
-  last_price: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model('coinstats', StatsSchema);
