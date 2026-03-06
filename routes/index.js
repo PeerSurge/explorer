@@ -1,3 +1,18 @@
+// Search by address prefix for wallet debugging and chain analysis
+router.get('/search', async function(req, res) {
+  const prefix = req.query.prefix;
+  if (!prefix || typeof prefix !== 'string' || prefix.length < 2) {
+    return res.status(400).json({ error: 'Missing or invalid prefix parameter.' });
+  }
+  const Address = require('../models/address');
+  try {
+    // Limit results for safety, e.g. max 100
+    const matches = await Address.find({ a_id: { $regex: '^' + prefix } }).limit(100);
+    res.json({ prefix, count: matches.length, addresses: matches });
+  } catch (e) {
+    res.status(500).json({ error: 'Database error.', details: e.message });
+  }
+});
 // Raw block JSON view for developers
 router.get('/block/:hash/raw', function(req, res) {
   lib.get_block(req.params.hash, function(rawblock) {
