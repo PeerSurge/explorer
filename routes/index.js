@@ -1,3 +1,12 @@
+// Raw block JSON view for developers
+router.get('/block/:hash/raw', function(req, res) {
+  lib.get_block(req.params.hash, function(rawblock) {
+    if (!rawblock || rawblock === 'There was an error. Check your console.') {
+      return res.status(404).json({ error: 'Block not found or RPC error.' });
+    }
+    res.json(rawblock);
+  });
+});
 // Raw transaction JSON view for developers
 router.get('/tx/:txid/raw', function(req, res) {
   lib.get_rawtransaction(req.params.txid, function(rawtx) {
