@@ -87,6 +87,11 @@ block content
       .alert.alert-info(role='alert', style='text-align:center;')   
         strong #{settings.locale.block_genesis}
     else
+      // Stake Modifier display (Peercoin-specific)
+      if block.modifier
+        .alert.alert-secondary(role='alert', style='text-align:center;')
+          strong Stake Modifier:
+          span(style='font-family:monospace;margin-left:8px;')= block.modifier
       .card.card-default
         .card-header
           strong #{settings.locale.ex_latest_transactions}
@@ -116,4 +121,4 @@ block content
                 td.view_tx 
                   a(href='/tx/'+txn.txid)
                     span.fa.fa-eye
-    .footer-padding  
+    .footer-padding
