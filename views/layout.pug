@@ -162,6 +162,11 @@ html
             a.nav-link(href='/node-info')
               span.fa.fa-info-circle
               span.menu-text Node Info
+          // Chain Parameters nav link
+          li#chain-parameters
+            a.nav-link(href='/chain-parameters')
+              span.fa.fa-cogs
+              span.menu-text Chain Parameters
           if settings.display.markets == true
             li#markets
               a.nav-link.loading(href='/markets/'+settings.markets.default)

@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  .container.mt-4
+    .row
+      .col-md-8.offset-md-2
+        h2 Chain Parameters
+        p.text-muted Peercoin chain parameters for developer reference.
+        table.table.table-bordered.table-striped.mt-3
+          tbody
+            tr
+              th Target Spacing
+              td= chainParams.target_spacing
+            tr
+              th Target Timespan
+              td= chainParams.target_timespan
+            tr
+              th Max Money
+              td= chainParams.max_money
+            tr
+              th Stake Minimum Age
+              td= chainParams.stake_min_age
+            tr
+              th Stake Minimum Depth
+              td= chainParams.stake_min_depth
+        .alert.alert-info.mt-4
+          | For full chain parameter details, use Peercoin RPC commands directly. This page summarizes key parameters for developers.

@@ -1,3 +1,23 @@
+// Chain Parameters page for developers
+router.get('/chain-parameters', async function(req, res) {
+  const lib = require('../lib/explorer');
+  // Use resilient RPC calls for each parameter
+  let params = await lib.resilientRpcCall('getchainparams', [], {});
+  let maxmoney = await lib.resilientRpcCall('getmaxmoney', [], '-');
+  // Fallbacks for older Peercoin nodes
+  if (!params || typeof params.target_spacing === 'undefined') {
+    params = {};
+  }
+  // Compose parameters object
+  const chainParams = {
+    target_spacing: params.target_spacing || '-',
+    target_timespan: params.target_timespan || '-',
+    max_money: maxmoney || '-',
+    stake_min_age: params.stake_min_age || '-',
+    stake_min_depth: params.stake_min_depth || '-',
+  };
+  res.render('chain_parameters', { chainParams });
+});
 // Node Info page for operators
 router.get('/node-info', async function(req, res) {
   const lib = require('../lib/explorer');
