@@ -277,30 +277,18 @@ router.get('/qr/:string', function(req, res) {
 
 router.get('/ext/summary', function(req, res) {
   lib.get_difficulty(function(difficulty) {
-    difficultyHybrid = ''
-    if (difficulty['proof-of-work']) {
-      if (settings.index.difficulty == 'Hybrid') {
-        difficultyHybrid = 'POS: ' + difficulty['proof-of-stake'];
-        difficulty = 'POW: ' + difficulty['proof-of-work'];
-      } else if (settings.index.difficulty == 'POW') {
-        difficulty = difficulty['proof-of-work'];
-      } else {
-        difficulty = difficulty['proof-of-stake'];
-      }
-    }
+    // Peercoin returns an object with proof-of-stake and proof-of-work
+    var difficulty_pos = (difficulty && difficulty['proof-of-stake'] !== undefined) ? difficulty['proof-of-stake'] : null;
+    var difficulty_pow = (difficulty && difficulty['proof-of-work'] !== undefined) ? difficulty['proof-of-work'] : null;
     lib.get_hashrate(function(hashrate) {
       lib.get_connectioncount(function(connections){
         lib.get_blockcount(function(blockcount) {
           db.get_stats(settings.coin, function (stats) {
-            if (hashrate == 'There was an error. Check your console.') {
-              hashrate = 0;
-            }
             res.send({ data: [{
-              difficulty: difficulty,
-              difficultyHybrid: difficultyHybrid,
-              supply: stats.supply,
+              difficulty_pos: difficulty_pos,
+              difficulty_pow: difficulty_pow,
               hashrate: hashrate,
-              lastPrice: stats.last_price,
+              supply: stats.supply,
               connections: connections,
               blockcount: blockcount
             }]});
