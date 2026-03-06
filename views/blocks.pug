@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  .col-md-12
+    .card.card-default
+      .card-header
+        strong #{settings.symbol} Blocks
+      table.table.table-bordered.table-striped.summary-table
+        thead
+          tr
+            th #{settings.locale.height}
+            th Hash
+            th Block Type
+            th #{settings.locale.tx}
+            th #{settings.locale.size} (kB)
+            th #{settings.locale.timestamp}
+        tbody
+          if blocks && blocks.length
+            each b in blocks
+              - var time = format_unixtime(b.time)
+              - var block_size = (b.size || 0) / 1024
+              tr
+                td
+                  a(href='/block/' + b.hash)= b.height
+                td
+                  a(href='/block/' + b.hash)= b.hash
+                td
+                  if b.type === 'PoS'
+                    span.badge.badge-success PoS
+                  else if b.type === 'PoW'
+                    span.badge.badge-warning PoW
+                  else
+                    span.badge.badge-secondary Unknown
+                td= b.txs
+                td= block_size.toFixed(2)
+                td= time
+          else
+            tr
+              td(colspan='6') No blocks available.
+  .footer-padding

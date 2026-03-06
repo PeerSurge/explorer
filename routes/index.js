@@ -10,19 +10,97 @@ function route_get_block(res, blockhash) {
   lib.get_block(blockhash, function (block) {
     if (block != 'There was an error. Check your console.') {
       if (blockhash == settings.genesis_block) {
-        res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: 'GENESIS'});
+        res.render('block', {
+          active: 'block',
+          block: block,
+          block_type: block_type,
+          confirmations: settings.confirmations,
+          txs: 'GENESIS'
+        });
       } else {
         db.get_txs(block, function(txs) {
           if (txs.length > 0) {
-            res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: txs});
+            res.render('block', {
+              active: 'block',
+              block: block,
+              block_type: block_type,
+              confirmations: settings.confirmations,
+              txs: txs
+            });
           } else {
             db.create_txs(block, function(){
               db.get_txs(block, function(ntxs) {
                 if (ntxs.length > 0) {
-                  res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: ntxs});
+                  res.render('block', {
+                    active: 'block',
+                    block: block,
+                    block_type: block_type,
+                    confirmations: settings.confirmations,
+                    txs: ntxs
+                  });
                 } else {
                   route_get_index(res, 'Block not found: ' + blockhash);
                 }
+              // ------------------------------------------------------------
+              // Peercoin: Blocks list page with Block Type (PoS / PoW)
+              // ------------------------------------------------------------
+              router.get('/blocks', function(req, res) {
+                var limit = 50; // number of recent blocks to show
+
+                lib.get_blockcount(function(blockcount) {
+                  if (blockcount == 'There was an error. Check your console.') {
+                    return route_get_index(res, 'Unable to fetch block count');
+                  }
+
+                  var blocks = [];
+
+                  function loadBlock(height) {
+                    if (blocks.length >= limit || height < 0) {
+                      // Done collecting blocks
+                      return res.render('blocks', {
+                        active: 'blocks',
+                        blocks: blocks
+                      });
+                    }
+
+                    lib.get_blockhash(height, function(hash) {
+                      if (hash == 'There was an error. Check your console.') {
+                        return loadBlock(height - 1);
+                      }
+
+                      lib.get_block(hash, function(block) {
+                        if (!block || block == 'There was an error. Check your console.') {
+                          return loadBlock(height - 1);
+                        }
+
+                        // Derive block type from flags
+                        var block_type = 'Unknown';
+                        if (block.flags && typeof block.flags === 'string') {
+                          if (block.flags.indexOf('proof-of-stake') !== -1) {
+                            block_type = 'PoS';
+                          } else if (block.flags.indexOf('proof-of-work') !== -1) {
+                            block_type = 'PoW';
+                          }
+                        }
+
+                        blocks.push({
+                          height: block.height,
+                          hash: block.hash,
+                          time: block.time,
+                          size: block.size,
+                          txs: Array.isArray(block.tx) ? block.tx.length : 0,
+                          confirmations: block.confirmations,
+                          type: block_type
+                        });
+
+                        loadBlock(height - 1);
+                      });
+                    });
+                  }
+
+                  loadBlock(blockcount);
+                });
+              });
               });
             });
           }
