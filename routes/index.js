@@ -139,29 +139,6 @@ router.get('/info', function(req, res) {
   res.render('info', { active: 'info', address: settings.address, hashes: settings.api });
 });
 
-router.get('/markets/:market', function(req, res) {
-  var market = req.params['market'];
-  if (settings.markets.enabled.indexOf(market) != -1) {
-    db.get_market(market, function(data) {
-      /*if (market === 'bittrex') {
-        data = JSON.parse(data);
-      }*/
-      // console.log(data);
-      res.render('./markets/' + market, {
-        active: 'markets',
-        marketdata: {
-          coin: settings.markets.coin,
-          exchange: settings.markets.exchange,
-          data: data,
-        },
-        market: market
-      });
-    });
-  } else {
-    route_get_index(res, null);
-  }
-});
-
 router.get('/richlist', function(req, res) {
   if (settings.display.richlist == true ) {
     db.get_stats(settings.coin, function (stats) {

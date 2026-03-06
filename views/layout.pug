@@ -152,101 +152,119 @@ html
               a.nav-link(href='/richlist')
                 span.fa.fa-btc
                 span.menu-text #{settings.locale.menu_richlist}
-          if settings.display.markets == true
-            li#markets
-              a.nav-link.loading(href='/markets/'+settings.markets.default)
-                span.fa.fa-line-chart
-                span.menu-text #{settings.locale.menu_markets}
           if settings.display.api == true
             li#info
               a.nav-link(href='/info')
                 span.fa.fa-info-circle
                 span.menu-text #{settings.locale.menu_api}
-    .col-md-12
-      .row.text-center.d-flex.justify-content-center
-        .col-md-2
-          .card.card-default.d-none.d-md-block.d-block
-            .card-header
-              if settings.nethash_units == 'K'
-                strong #{settings.locale.network} (KH/s)
-              else if settings.nethash_units == 'M'
-                strong #{settings.locale.network} (MH/s)
-              else if settings.nethash_units == 'G'
-                strong #{settings.locale.network} (GH/s)
-              else if settings.nethash_units == 'T'
-                strong #{settings.locale.network} (TH/s)
-              else if settings.nethash_units == 'P'
-                strong #{settings.locale.network} (PH/s)
-              else if settings.nethash_units == 'H'
-                strong #{settings.locale.network} (H/s)
-            .card-body
-              #hashratecard
-                span.header-icons.fa.fa-gears
-                if settings.index.difficulty == 'Hybrid'
-                  label#hashrate -
-                  <br>
-                  label#lblX1
-                else
-                  label#hashrate -
-        .col-md-2
-          .card.card-default.d-none.d-md-block.d-block
-            .card-header
-              strong #{settings.locale.difficulty}
-            .card-body
-              #difficultycard
-                span.header-icons.fa.fa-sliders
-                if settings.index.difficulty == 'Hybrid'
-                  label#difficulty -
-                  <br>
-                  label#difficultyHybrid -
-                else
-                  label#difficulty -
-        
-        .col-md-2.col-sm-12
-            img(src=settings.logo, style='margin-top:-15px;height:128px;')
-        .col-md-2
-          .card.card-default.d-none.d-md-block.d-block
-            .card-header
-              strong #{settings.locale.ex_supply} (#{settings.symbol})
-            .card-body
-              #supplycard
-                span.header-icons.fa.fa-pie-chart
-                if settings.index.difficulty == 'Hybrid'
-                  label#supply -
-                  <br>
-                  label#lblX1
-                else
-                  label#supply -
-                if settings.index.show_market_cap == true && settings.index.show_market_cap_over_price != true  
-                  <br>  
-                  label ( 
-                  label#marketCap - 
-                  label )
-        .col-md-2
-          .card.card-default.d-none.d-md-block.d-block
-            if settings.index.show_market_cap != true || settings.index.show_market_cap_over_price != true
+        if settings.display.richlist
+          li.nav-item(class=(active=='richlist'?'active':''))
+            a.nav-link(href='/richlist') Rich List
+        if settings.display.twitter || settings.display.facebook || settings.display.googleplus || settings.display.youtube
+          li.nav-item(class=(active=='api'?'active':''))
+            a.nav-link(href='/info') API
+          ul.nav.justify-content-left
+            if settings.display.twitter
+              li.pull-left
+                a#twitter-icon.nav-link.social-link(href="https://twitter.com/"+settings.twitter, target='_blank')
+                  span.glyphicon.fa.fa-twitter
+            if settings.display.facebook
+              li.pull-left
+                a#facebook-icon.nav-link.social-link(href="https://www.facebook.com/"+settings.facebook, target='_blank')
+                  span.glyphicon.fa.fa-facebook
+            if settings.display.googleplus
+              li.pull-left
+                a#googleplus-icon.nav-link.social-link(href="https://plus.google.com/"+settings.googleplus, target='_blank')
+                  span.glyphicon.fa.fa-google-plus
+            if settings.display.youtube
+              li.pull-left
+                a#youtube-icon.nav-link.social-link(href="https://www.youtube.com/channel/"+settings.youtube, target='_blank')
+                  span.glyphicon.fa.fa-youtube
+      .col-md-12
+        .row.text-center.d-flex.justify-content-center
+          .col-md-2
+            .card.card-default.d-none.d-md-block.d-block
               .card-header
-                strong #{settings.markets.exchange} Price
+                if settings.nethash_units == 'K'
+                  strong #{settings.locale.network} (KH/s)
+                else if settings.nethash_units == 'M'
+                  strong #{settings.locale.network} (MH/s)
+                else if settings.nethash_units == 'G'
+                  strong #{settings.locale.network} (GH/s)
+                else if settings.nethash_units == 'T'
+                  strong #{settings.locale.network} (TH/s)
+                else if settings.nethash_units == 'P'
+                  strong #{settings.locale.network} (PH/s)
+                else if settings.nethash_units == 'H'
+                  strong #{settings.locale.network} (H/s)
               .card-body
-                #pricecard
-                  span.header-icons.fa.fa-rocket
+                #hashratecard
+                  span.header-icons.fa.fa-gears
                   if settings.index.difficulty == 'Hybrid'
-                    label#lastPrice -
+                    label#hashrate -
                     <br>
                     label#lblX1
                   else
-                    label#lastPrice -
-          if settings.index.show_market_cap == true && settings.index.show_market_cap_over_price == true
-            .card-header
-              strong Market Cap
-            .card-body
-              label#marketCap -
+                    label#hashrate -
+          .col-md-2
+            .card.card-default.d-none.d-md-block.d-block
+              .card-header
+                strong #{settings.locale.difficulty}
+              .card-body
+                #difficultycard
+                  span.header-icons.fa.fa-sliders
+                  if settings.index.difficulty == 'Hybrid'
+                    label#difficulty -
+                    <br>
+                    label#difficultyHybrid -
+                  else
+                    label#difficulty -
+            
+          .col-md-2.col-sm-12
+            img(src=settings.logo, style='margin-top:-15px;height:128px;')
+          .col-md-2
+            .card.card-default.d-none.d-md-block.d-block
+              .card-header
+                strong #{settings.locale.ex_supply} (#{settings.symbol})
+              .card-body
+                #supplycard
+                  span.header-icons.fa.fa-pie-chart
+                  if settings.index.difficulty == 'Hybrid'
+                    label#supply -
+                    <br>
+                    label#lblX1
+                  else
+                    label#supply -
+                  if settings.index.show_market_cap == true && settings.index.show_market_cap_over_price != true  
+                    <br>  
+                    label ( 
+                    label#marketCap - 
+                    label )
+          .col-md-2
+            .card.card-default.d-none.d-md-block.d-block
+              if settings.index.show_market_cap != true || settings.index.show_market_cap_over_price != true
+                .card-header
+                  strong #{settings.markets.exchange} Price
+                .card-body
+                  #pricecard
+                    span.header-icons.fa.fa-rocket
+                    if settings.index.difficulty == 'Hybrid'
+                      label#lastPrice -
+                      <br>
+                      label#lblX1
+                    else
+                      label#lastPrice -
+              if settings.index.show_market_cap == true && settings.index.show_market_cap_over_price == true
+                .card-header
+                  strong Market Cap
+                .card-body
+                  label#marketCap -
 
-      .row.text-center(style='margin-top:10px;margin-bottom:20px;')
-        form.form-inline.col-12.d-flex.justify-content-center(method='post', action='/search')
-          #index-search.form-group.d-flex.justify-content-center
-            input.form-control(type='text', name='search', placeholder=settings.locale.ex_search_message, style='min-width:80%;margin-right:5px;')
-            button.btn.btn-success(type='submit') #{settings.locale.ex_search_button}
+        .row.text-center(style='margin-top:10px;margin-bottom:20px;')
+          form.form-inline.col-12.d-flex.justify-content-center(method='post', action='/search')
+            #index-search.form-group.d-flex.justify-content-center
+              input.form-control(type='text', name='search', placeholder=settings.locale.ex_search_message, style='min-width:80%;margin-right:5px;')
+              button.btn.btn-success(type='submit') #{settings.locale.ex_search_button}
     block content
     div(class=footerClasses, role='navigation')
       .col-md-4.navbar-nav
