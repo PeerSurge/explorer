@@ -1,3 +1,68 @@
+// Top Stakers page for Peercoin
+router.get('/top-stakers', async function(req, res) {
+  const lib = require('../lib/explorer');
+  const numBlocks = 2000; // Analyze last 2000 blocks for performance
+  lib.get_blockcount(async function(blockcount) {
+    let heights = [];
+    for (let h = blockcount - 1; h >= Math.max(0, blockcount - numBlocks); h--) {
+      heights.push(h);
+    }
+    let stakerMap = {};
+    let recentStakes = [];
+    for (let idx = 0; idx < heights.length; idx++) {
+      await new Promise(resolve => {
+        lib.get_blockhash(heights[idx], function(hash) {
+          if (hash && hash !== 'There was an error. Check your console.') {
+            lib.get_block(hash, function(block) {
+              if (block && block.flags && block.flags.toLowerCase().includes('proof-of-stake')) {
+                // Try to detect staker address from coinstake tx
+                if (block.tx && block.tx.length > 1) {
+                  const coinstakeTx = block.tx[1];
+                  if (coinstakeTx.vout && coinstakeTx.vout.length > 1 && coinstakeTx.vout[1].scriptPubKey && coinstakeTx.vout[1].scriptPubKey.addresses) {
+                    const staker = coinstakeTx.vout[1].scriptPubKey.addresses[0];
+                    if (!stakerMap[staker]) {
+                      stakerMap[staker] = { count: 0, last: 0, times: [] };
+                    }
+                    stakerMap[staker].count++;
+                    stakerMap[staker].last = block.time;
+                    stakerMap[staker].times.push(block.time);
+                    recentStakes.push({ address: staker, block: block.height, time: block.time });
+                  }
+                }
+              }
+              resolve();
+            });
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+    // Sort by most PoS blocks
+    let topStakers = Object.entries(stakerMap).map(([address, data]) => {
+      // Calculate frequency (average interval in hours)
+      let freq = null;
+      if (data.times.length > 1) {
+        let intervals = data.times.slice(1).map((t, i) => t - data.times[i]);
+        let avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+        freq = (avgInterval / 3600).toFixed(2); // hours
+      }
+      return {
+        address,
+        count: data.count,
+        last: data.last,
+        frequency: freq
+      };
+    });
+    topStakers.sort((a, b) => b.count - a.count);
+    // Most recent stakers (last 20)
+    recentStakes.sort((a, b) => b.time - a.time);
+    res.render('top_stakers', {
+      topStakers: topStakers.slice(0, 30),
+      recentStakes: recentStakes.slice(0, 20)
+    });
+  });
+});
 // API: Sync status indicator
 router.get('/api/sync-status', async function(req, res) {
   const lib = require('../lib/explorer');

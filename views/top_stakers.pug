@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  .container.mt-4
+    .row
+      .col-md-10.offset-md-1
+        h2 Top Stakers
+        p.text-muted Peercoin addresses with the most PoS blocks and most recent stakes (last 2,000 blocks).
+        h4.mt-4 Most Prolific Stakers
+        table.table.table-bordered.table-striped.table-sm
+          thead
+            tr
+              th Rank
+              th Address
+              th PoS Blocks
+              th Last Staked
+              th Stake Frequency (hrs)
+          tbody
+            each staker, i in topStakers
+              tr
+                td= i+1
+                td
+                  a(href='/address/' + staker.address)= staker.address
+                td= staker.count
+                td= staker.last ? format_unixtime(staker.last) : '-'
+                td= staker.frequency || '-'
+        h4.mt-5 Most Recent Stakers
+        table.table.table-bordered.table-striped.table-sm
+          thead
+            tr
+              th Address
+              th Block
+              th Time
+          tbody
+            each stake in recentStakes
+              tr
+                td
+                  a(href='/address/' + stake.address)= stake.address
+                td= stake.block
+                td= format_unixtime(stake.time)
+        .alert.alert-info.mt-4
+          | This page highlights Peercoin's unique PoS activity. Stake frequency is the average interval between blocks staked by each address (lower is more frequent).
