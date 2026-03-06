@@ -1,3 +1,33 @@
+// Visible richlist delta view
+router.get('/richlist/delta/view', async function(req, res) {
+  const Address = require('../models/address');
+  const now = Date.now();
+  try {
+    const rich = await Address.find({}).sort({ balance: -1 }).limit(100);
+    const deltas = rich.map(addr => {
+      let delta24h = 0, delta7d = 0, delta30d = 0;
+      if (Array.isArray(addr.balance_history)) {
+        const bNow = addr.balance;
+        const b24h = addr.balance_history.find(b => now - b.ts < 86400000);
+        const b7d = addr.balance_history.find(b => now - b.ts < 604800000);
+        const b30d = addr.balance_history.find(b => now - b.ts < 2592000000);
+        delta24h = b24h ? bNow - b24h.balance : 0;
+        delta7d = b7d ? bNow - b7d.balance : 0;
+        delta30d = b30d ? bNow - b30d.balance : 0;
+      }
+      return {
+        a_id: addr.a_id,
+        balance: addr.balance,
+        delta24h,
+        delta7d,
+        delta30d
+      };
+    });
+    res.render('richlist_delta', { deltas });
+  } catch (e) {
+    res.render('error', { error: 'Database error.', details: e.message });
+  }
+});
 // Richlist delta analytics view
 router.get('/richlist/delta', async function(req, res) {
   const Address = require('../models/address');

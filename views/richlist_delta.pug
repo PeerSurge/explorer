@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-12
+        h2 Richlist Delta Analytics
+        p.text-muted Shows 24h, 7d, 30d balance changes for top addresses (requires balance_history snapshots).
+        table.table.table-striped.table-bordered
+          thead
+            tr
+              th Rank
+              th Address
+              th Balance
+              th 24h Δ
+              th 7d Δ
+              th 30d Δ
+          tbody
+            - var count = 0
+            each item in deltas
+              - count = count + 1
+              tr
+                td= count
+                td
+                  a(href='/address/' + item.a_id)= item.a_id
+                td= (item.balance / 100000000).toLocaleString('en',{'minimumFractionDigits':2,'maximumFractionDigits':8,'useGrouping':true})
+                td= (item.delta24h / 100000000).toLocaleString('en',{'minimumFractionDigits':2,'maximumFractionDigits':8,'useGrouping':true})
+                td= (item.delta7d / 100000000).toLocaleString('en',{'minimumFractionDigits':2,'maximumFractionDigits':8,'useGrouping':true})
+                td= (item.delta30d / 100000000).toLocaleString('en',{'minimumFractionDigits':2,'maximumFractionDigits':8,'useGrouping':true})

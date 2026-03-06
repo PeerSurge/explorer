@@ -54,6 +54,9 @@ block content
         #summary-panel.card.card-default(style='margin-top:47px;')
           .card-header
             h5.card-title #{settings.locale.rl_wealth}
+            a.btn.btn-sm.btn-outline-info.mt-2(href='/richlist/delta/view', target='_blank', title='View richlist balance changes for power users')
+              span.fa.fa-line-chart(style='margin-right:5px;')
+              | Richlist Delta Analytics
           table.table.table-hover.table-bordered
             thead
               tr
