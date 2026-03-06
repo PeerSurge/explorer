@@ -1,7 +1,8 @@
 {
-  "name": "explorer",
-  "version": "1.7.4",
+  "name": "peersurge-explorer",
+  "version": "1.8.0",
   "private": true,
+  "description": "PeerSurge Explorer — A modern Peercoin-focused continuation of Iquidus Explorer",
   "scripts": {
     "start": "node --stack-size=10000 ./bin/cluster",
     "stop": "kill -2 $(cat tmp/cluster.pid)",
