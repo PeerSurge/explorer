@@ -4,7 +4,7 @@ block content
   .container
     .row
       .col-12
-        h2 Latest 50 Blocks
+        h2 Block Explorer
         table.table.table-striped.table-bordered
           thead
             tr
@@ -30,3 +30,21 @@ block content
                 td= block.tx_count
                 td= (block.size / 1024).toFixed(2)
                 td= format_unixtime(block.time)
+        // Pagination controls
+        if maxPage > 1
+          nav.mt-3
+            ul.pagination.justify-content-center
+              if page > 1
+                li.page-item
+                  a.page-link(href='/blocks?page=' + (page - 1)) Previous
+              else
+                li.page-item.disabled
+                  span.page-link Previous
+              li.page-item.active
+                span.page-link Page #{page} of #{maxPage}
+              if page < maxPage
+                li.page-item
+                  a.page-link(href='/blocks?page=' + (page + 1)) Next
+              else
+                li.page-item.disabled
+                  span.page-link Next

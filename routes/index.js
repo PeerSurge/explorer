@@ -48,14 +48,19 @@ router.get('/health', async function(req, res) {
 });
 // 12C — Add /blocks route: latest 50 blocks with block type
 router.get('/blocks', function(req, res) {
+  const perPage = 50;
+  const page = Math.max(parseInt(req.query.page || '1'), 1);
   lib.get_blockcount(function(blockcount) {
+    const maxPage = Math.ceil(blockcount / perPage);
+    const start = blockcount - ((page - 1) * perPage) - 1;
+    const end = Math.max(start - perPage + 1, 0);
     let heights = [];
-    for (let h = blockcount - 1; h >= Math.max(0, blockcount - 50); h--) {
-      heights.push(h);
+    for (let h = start; h >= end; h--) {
+      if (h >= 0) heights.push(h);
     }
     let blocks = [];
     let processed = 0;
-    if (heights.length === 0) return res.render('blocks', { blocks: [] });
+    if (heights.length === 0) return res.render('blocks', { blocks: [], page, maxPage });
     heights.forEach(function(height, idx) {
       lib.get_blockhash(height, function(hash) {
         if (hash && hash !== 'There was an error. Check your console.') {
@@ -78,16 +83,15 @@ router.get('/blocks', function(req, res) {
             };
             processed++;
             if (processed === heights.length) {
-              // Sort by height descending just in case
               blocks = blocks.filter(Boolean).sort((a, b) => b.height - a.height);
-              res.render('blocks', { blocks });
+              res.render('blocks', { blocks, page, maxPage });
             }
           });
         } else {
           processed++;
           if (processed === heights.length) {
             blocks = blocks.filter(Boolean).sort((a, b) => b.height - a.height);
-            res.render('blocks', { blocks });
+            res.render('blocks', { blocks, page, maxPage });
           }
         }
       });
