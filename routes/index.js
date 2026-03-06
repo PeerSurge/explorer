@@ -1,3 +1,27 @@
+// Node Info page for operators
+router.get('/node-info', async function(req, res) {
+  const lib = require('../lib/explorer');
+  // Use resilient RPC calls for each field
+  let rpcinfo = await lib.resilientRpcCall('getrpcinfo', [], {});
+  let peercoininfo = await lib.resilientRpcCall('getinfo', [], {});
+  let uptime = await lib.resilientRpcCall('uptime', [], null);
+  // Fallbacks for older Peercoin nodes
+  if (!rpcinfo || typeof rpcinfo.version === 'undefined') {
+    rpcinfo = {};
+  }
+  if (!peercoininfo || typeof peercoininfo.version === 'undefined') {
+    peercoininfo = {};
+  }
+  // Compose info object
+  const nodeInfo = {
+    rpc_version: rpcinfo.version || '-',
+    peercoin_version: peercoininfo.version || '-',
+    protocol_version: peercoininfo.protocolversion || '-',
+    wallet_version: peercoininfo.walletversion || '-',
+    uptime: uptime || '-',
+  };
+  res.render('node_info', { nodeInfo });
+});
 // Peercoin Staking Activity Analytics
 router.get('/staking-activity', async function(req, res) {
   const lib = require('../lib/explorer');

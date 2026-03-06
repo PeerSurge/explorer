@@ -157,6 +157,11 @@ html
             a.nav-link(href='/staking-activity')
               span.fa.fa-leaf
               span.menu-text Staking Activity
+          // Node Info nav link
+          li#node-info
+            a.nav-link(href='/node-info')
+              span.fa.fa-info-circle
+              span.menu-text Node Info
           if settings.display.markets == true
             li#markets
               a.nav-link.loading(href='/markets/'+settings.markets.default)

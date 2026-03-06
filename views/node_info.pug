@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  .container.mt-4
+    .row
+      .col-md-8.offset-md-2
+        h2 Node Info
+        p.text-muted Peercoin node information for operators and diagnostics.
+        table.table.table-bordered.table-striped.mt-3
+          tbody
+            tr
+              th RPC Version
+              td= nodeInfo.rpc_version
+            tr
+              th Peercoin Version
+              td= nodeInfo.peercoin_version
+            tr
+              th Protocol Version
+              td= nodeInfo.protocol_version
+            tr
+              th Wallet Version
+              td= nodeInfo.wallet_version
+            tr
+              th Uptime (seconds)
+              td= nodeInfo.uptime
+        .alert.alert-info.mt-4
+          | For full node diagnostics, use Peercoin RPC commands directly. This page summarizes key info for operators.
