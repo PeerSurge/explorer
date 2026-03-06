@@ -1,28 +1,37 @@
-1.7.4
+# Changelog
+
+## [1.8.0] - Upcoming (PeerSurge)
+
+### Added
+- Modernized branding and documentation for PeerSurge fork
+- Updated UI references and legal attributions
+- Improved changelog formatting to Markdown
+
+## 1.7.4
 * Updated themes to Bootstrap 4.5 by using latest Bootswatch themes
 * Deleted unmaintained themes that were never ported to Bootstrap4
 * New setting to optionally show a logo in the navbar header: headerlogo
 * New settings to switch between default, dark and light boostswatch navbars: display.navbar_dark and display.navbar_light
 * Added flag icons to network view.
 
-1.7.3
+## 1.7.3
 * Fixes for Historical Address Balance - seems to be fastest method that works along-side parallel indexing
 * New settings to optionally show market cap in header: show_market_cap and show_market_cap_over_price
 
-1.7.2
+## 1.7.2
 * Index blocks in parallel - uses settings for task counts.
 * Indexing is much faster (again).
 * New settings to adjust parallel task counts: block_parallel_tasks
 
-1.7.1
+## 1.7.1
 * Added "claim address" system - allows users to label addresses by signing messages
 
-1.7.0
+## 1.7.0
 * Various updated dependencies & node version
 * Switched from Jade to Pug
 * Updated required mongo version
 
-1.6.2
+## 1.6.2
 * Indexing is now MUCH faster.
 * Added AddressTX model/collection - REQUIRES REINDEX
 * Added balance history to Address TX History
@@ -34,13 +43,13 @@
 * New setting to lock during indexing: lock_during_index
 * Add setting to call bitcoin-core directly or use RPC during indexing
 
-1.6.1
+## 1.6.1
 * fixed last_txs setting
 * added hashrate_units setting
 * added cryptsy support (markets)
 * removed market update lockfile
 
-1.6.0
+## 1.6.0
 * Fixed negative/incorrect balance due to sending to yourself (Issues #6, #8)
 * Pages found via search now display full url 
 * Markets backend overhaul/rewrite
@@ -50,7 +59,7 @@
 * Layout data (coin supply, connections etc) now fetched via ajax
 * Dynamic table data on main view (ajax, updates every 30 seconds)
 
-1.5.2
+## 1.5.2
 * fix poloniex href (xCore)
 * added links (xCore)
 * coinbase balance fix (xCore)
@@ -59,10 +68,10 @@
 * finalized getlasttxs api call
 * added footer logo
 
-1.5.1
+## 1.5.1
 * added labels setting (address labels)
 
-1.5.0
+## 1.5.0
 * added theme setting to settings.json
 * added bootswatch themes
 * new extended api call (getlasttxs)
@@ -75,8 +84,7 @@
 * search tx blockcount fix
 * address page redesign
 
-1.4.1
-
+## 1.4.1
 * Added user and password to database settings
 * Mongo authentication 
 * Added alert (index not up-to-date)
@@ -84,8 +92,7 @@
 * added 'npm stop' to kill cluster
 * Added logo setting
 
-1.4.0
-
+## 1.4.0
 * Removed mintpal support (markets)
 * Added poloniex support (markets)
 * Cluster support
@@ -97,13 +104,11 @@
 * Sync fixes/optimizations
 * New setting: show_sent_received
 
-1.3.4
-
+## 1.3.4
 * Added qrcode api
 * Added qrcode to address page
 
-1.3.3
-
+## 1.3.3
 * Wealth Distribution stats & charts (richlist)
 * New locale settings (richlist)
 * Extended api
@@ -112,8 +117,7 @@
 * getdistribution (api)
 * Negative zero balance fix (address)
 
-1.3.2
-
+## 1.3.2
 * HeavyCoin support
 * New heavy setting (heavy)
 * New rewards page (heavy)
@@ -124,16 +128,14 @@
 * Indexing optimizations
 * DOS address page fix
 
-1.3.1
-
+## 1.3.1
 * Rich Lists/Top 100
 * PoS fixes
 * ui fixes
 * coinbase address segfault fix
 * performance tweaks
 
-1.3.0
-
+## 1.3.0
 * merged blocknotify.js and markets.js into sync.js
 * added update and check timeout settings
 * local tx index
@@ -145,8 +147,7 @@
 * new address view
 * search by address
 
-1.2.1
-
+## 1.2.1
 * updated locale (markets)
 * updated index view
 * updated tx view
@@ -155,8 +156,7 @@
 * added confirmations setting
 * added screenshots
 
-1.2.0
-
+## 1.2.0
 * added jqplot and datatables
 * new markets page 
 * added mintpal support (markets)
@@ -167,12 +167,10 @@
 * added icons to nav (explorer, markets, api, loading, twitter)
 * new twitter setting
 
-1.1.0
-
+## 1.1.0
 * fixed navbar title (was not reading from settings)
 * added locale support (and updated views)
 * new display setting to toggle menu items (api)
 
-1.0.0
-
+## 1.0.0
 * initial release

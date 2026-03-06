@@ -48,14 +48,14 @@ block market_view
         .panel-heading
           strong #{settings.locale.altmarkets} - #{marketdata.coin}/#{marketdata.exchange} - #{settings.locale.mkt_hours}
           a(href='#')
-            span.fa.fa-th-list.pull-right.view-summary.iquidus.market-toggle(data-toggle='tooltip', data-placement='bottom', title=settings.locale.mkt_view_chart) 
+            span.fa.fa-th-list.pull-right.view-summary.peersurge.market-toggle(data-toggle='tooltip', data-placement='bottom', title=settings.locale.mkt_view_chart) 
         .panel-body
           div#chart(style="width:100%;height:300px;")
       #summary-panel.panel.panel-default
         .panel-heading
           h5 #{settings.locale.altmarkets} - #{marketdata.coin}/#{marketdata.exchange} - #{settings.locale.mkt_hours}
           a(href='#')
-            span.fa.fa-line-chart.pull-right.view-chart.iquidus.market-toggle(data-toggle='tooltip', data-placement='bottom', title=settings.locale.mkt_view_summary) 
+            span.fa.fa-line-chart.pull-right.view-chart.peersurge.market-toggle(data-toggle='tooltip', data-placement='bottom', title=settings.locale.mkt_view_summary) 
         table.table.table-bordered.summary-table 
           thead
             tr
