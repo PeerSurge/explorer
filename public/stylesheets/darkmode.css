@@ -1,0 +1,58 @@
+body.darkmode {
+  background: #181a1b !important;
+  color: #e0e0e0 !important;
+}
+.darkmode .navbar,
+.darkmode .footer,
+.darkmode .card,
+.darkmode .table,
+.darkmode .modal-content {
+  background-color: #23272b !important;
+  color: #e0e0e0 !important;
+}
+.darkmode .table th,
+.darkmode .table td {
+  background-color: #23272b !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+.darkmode .card-header,
+.darkmode .card-body {
+  background-color: #23272b !important;
+  color: #e0e0e0 !important;
+}
+.darkmode .btn,
+.darkmode .btn-dark {
+  background-color: #343a40 !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+.darkmode .alert {
+  background-color: #222 !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+.darkmode .form-control {
+  background-color: #23272b !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+.darkmode .dropdown-menu {
+  background-color: #23272b !important;
+  color: #e0e0e0 !important;
+}
+.darkmode .modal-content {
+  background-color: #23272b !important;
+  color: #e0e0e0 !important;
+}
+.darkmode .jqplot-table-legend {
+  background: #23272b !important;
+  color: #e0e0e0 !important;
+}
+.darkmode .jqplot-axis {
+  color: #e0e0e0 !important;
+}
+.darkmode .jqplot-xaxis-tick,
+.darkmode .jqplot-yaxis-tick {
+  color: #e0e0e0 !important;
+}

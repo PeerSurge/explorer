@@ -9,6 +9,8 @@ html
     link(rel='stylesheet', href='//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css')
     link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    // Dark mode stylesheet
+    link(rel='stylesheet', href='/stylesheets/darkmode.css', id='darkmode-css', disabled)
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
     script(src='//stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js')
     script(src='/vendor/jqplot/jquery.jqplot.min.js')
@@ -26,6 +28,17 @@ html
     script.
       $(document).ready(function(){
         $('##{active}').addClass('active');
+        // Dark mode toggle
+        if (localStorage.getItem('darkmode') === 'true') {
+          $('#darkmode-css')[0].disabled = false;
+          $('body').addClass('darkmode');
+        }
+        $('#darkmode-toggle').on('click', function() {
+          var enabled = $('#darkmode-css')[0].disabled;
+          $('#darkmode-css')[0].disabled = !enabled;
+          $('body').toggleClass('darkmode');
+          localStorage.setItem('darkmode', String(!enabled));
+        });
         function update_stats(){
           $.ajax({url: '/ext/summary', success: function(json){
             var supplyString = json.data[0].supply;
@@ -117,6 +130,11 @@ html
         - navbarClasses.push('navbar-dark');
         - footerClasses.push('bg-primary');
         - footerClasses.push('navbar-dark');
+    // Dark mode toggle button (top right)
+    div(style='position:fixed;top:10px;right:30px;z-index:2000;')
+      button#darkmode-toggle.btn.btn-sm.btn-dark(type='button', title='Toggle dark mode')
+        span.fa.fa-moon
+        |  Dark Mode
     div(class=navbarClasses, role='navigation')
       .navbar-header
         button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbar-collapse')
