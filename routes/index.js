@@ -1,3 +1,51 @@
+// Health check endpoint for monitoring
+router.get('/health', async function(req, res) {
+  // Check RPC connectivity
+  let rpc_ok = false;
+  let mongo_ok = false;
+  let sync_ok = false;
+  // Check RPC: try getblockcount
+  await new Promise(resolve => {
+    lib.get_blockcount(function(count) {
+      rpc_ok = (typeof count === 'number' && count > 0);
+      resolve();
+    });
+  });
+  // Check MongoDB: try to count Address documents
+  try {
+    const Address = require('../models/address');
+    const count = await Address.countDocuments();
+    mongo_ok = (typeof count === 'number');
+  } catch (e) {
+    mongo_ok = false;
+  }
+  // Explorer sync status: check if last indexed block matches RPC blockcount
+  let explorer_height = null;
+  let rpc_height = null;
+  await new Promise(resolve => {
+    lib.get_blockcount(function(count) {
+      rpc_height = count;
+      resolve();
+    });
+  });
+  const Stats = require('../models/stats');
+  try {
+    const stats = await Stats.findOne({coin: require('../lib/settings').coin});
+    if (stats && typeof stats.last === 'number') {
+      explorer_height = stats.last;
+      sync_ok = (explorer_height === rpc_height);
+    }
+  } catch (e) {
+    sync_ok = false;
+  }
+  res.json({
+    rpc: rpc_ok,
+    mongo: mongo_ok,
+    explorer_synced: sync_ok,
+    explorer_height,
+    rpc_height
+  });
+});
 // 12C — Add /blocks route: latest 50 blocks with block type
 router.get('/blocks', function(req, res) {
   lib.get_blockcount(function(blockcount) {
