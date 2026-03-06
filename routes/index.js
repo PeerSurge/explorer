@@ -1,3 +1,51 @@
+// 12C — Add /blocks route: latest 50 blocks with block type
+router.get('/blocks', function(req, res) {
+  lib.get_blockcount(function(blockcount) {
+    let heights = [];
+    for (let h = blockcount - 1; h >= Math.max(0, blockcount - 50); h--) {
+      heights.push(h);
+    }
+    let blocks = [];
+    let processed = 0;
+    if (heights.length === 0) return res.render('blocks', { blocks: [] });
+    heights.forEach(function(height, idx) {
+      lib.get_blockhash(height, function(hash) {
+        if (hash && hash !== 'There was an error. Check your console.') {
+          lib.get_block(hash, function(block) {
+            let block_type = 'Unknown';
+            if (block && block.flags) {
+              if (block.flags.toLowerCase().includes('proof-of-stake')) {
+                block_type = 'PoS';
+              } else if (block.flags.toLowerCase().includes('proof-of-work')) {
+                block_type = 'PoW';
+              }
+            }
+            blocks[idx] = {
+              height: block.height,
+              hash: block.hash,
+              block_type: block_type,
+              tx_count: block.tx ? block.tx.length : 0,
+              size: block.size,
+              time: block.time
+            };
+            processed++;
+            if (processed === heights.length) {
+              // Sort by height descending just in case
+              blocks = blocks.filter(Boolean).sort((a, b) => b.height - a.height);
+              res.render('blocks', { blocks });
+            }
+          });
+        } else {
+          processed++;
+          if (processed === heights.length) {
+            blocks = blocks.filter(Boolean).sort((a, b) => b.height - a.height);
+            res.render('blocks', { blocks });
+          }
+        }
+      });
+    });
+  });
+});
 var express = require('express')
     , router = express.Router()
     , settings = require('../lib/settings')
@@ -9,17 +57,26 @@ var express = require('express')
 function route_get_block(res, blockhash) {
   lib.get_block(blockhash, function (block) {
     if (block != 'There was an error. Check your console.') {
+      // 12A: Compute block_type from block.flags
+      let block_type = 'Unknown';
+      if (block && block.flags) {
+        if (block.flags.toLowerCase().includes('proof-of-stake')) {
+          block_type = 'PoS';
+        } else if (block.flags.toLowerCase().includes('proof-of-work')) {
+          block_type = 'PoW';
+        }
+      }
       if (blockhash == settings.genesis_block) {
-        res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: 'GENESIS'});
+        res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: 'GENESIS', block_type });
       } else {
         db.get_txs(block, function(txs) {
           if (txs.length > 0) {
-            res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: txs});
+            res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: txs, block_type });
           } else {
             db.create_txs(block, function(){
               db.get_txs(block, function(ntxs) {
                 if (ntxs.length > 0) {
-                  res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: ntxs});
+                  res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: ntxs, block_type });
                 } else {
                   route_get_index(res, 'Block not found: ' + blockhash);
                 }

@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-12
+        h2 Latest 50 Blocks
+        table.table.table-striped.table-bordered
+          thead
+            tr
+              th Height
+              th Hash
+              th Block Type
+              th Tx Count
+              th Size (kB)
+              th Timestamp
+          tbody
+            each block in blocks
+              tr
+                td
+                  a(href='/block/' + block.hash)= block.height
+                td= block.hash
+                td
+                  if block.block_type === 'PoS'
+                    span.badge.badge-success.badge-sm(style='font-size:90%;') PoS
+                  else if block.block_type === 'PoW'
+                    span.badge.badge-warning.text-dark.badge-sm(style='font-size:90%;') PoW
+                  else
+                    span.badge.badge-secondary.badge-sm(style='font-size:90%;') Unknown
+                td= block.tx_count
+                td= (block.size / 1024).toFixed(2)
+                td= format_unixtime(block.time)
