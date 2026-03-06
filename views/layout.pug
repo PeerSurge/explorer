@@ -39,6 +39,36 @@ html
           $('body').toggleClass('darkmode');
           localStorage.setItem('darkmode', String(!enabled));
         });
+        // Sync status widget
+        function update_sync_status() {
+          $.ajax({url: '/api/sync-status', success: function(json) {
+            if (json && json.rpc_block && json.explorer_block) {
+              $('#sync-explorer-block').text(json.explorer_block);
+              $('#sync-rpc-block').text(json.rpc_block);
+              $('#sync-diff').text(json.difference);
+              $('#sync-percent').text(json.percent_synced ? json.percent_synced + '%': '-');
+              if (json.difference > 10) {
+                $('#sync-status-indicator').removeClass('bg-success').addClass('bg-warning');
+              } else {
+                $('#sync-status-indicator').removeClass('bg-warning').addClass('bg-success');
+              }
+            } else {
+              $('#sync-explorer-block').text('-');
+              $('#sync-rpc-block').text('-');
+              $('#sync-diff').text('-');
+              $('#sync-percent').text('-');
+              $('#sync-status-indicator').removeClass('bg-success bg-warning').addClass('bg-secondary');
+            }
+          }, error: function() {
+            $('#sync-explorer-block').text('-');
+            $('#sync-rpc-block').text('-');
+            $('#sync-diff').text('-');
+            $('#sync-percent').text('-');
+            $('#sync-status-indicator').removeClass('bg-success bg-warning').addClass('bg-secondary');
+          }});
+        }
+        setInterval(update_sync_status, 30000);
+        update_sync_status();
         function update_stats(){
           $.ajax({url: '/ext/summary', success: function(json){
             var supplyString = json.data[0].supply;
@@ -204,7 +234,30 @@ html
     .container-fluid
       .row
         .col-md-2.d-none.d-md-block
-          .card#node-status-widget(style='position:fixed;top:90px;left:30px;width:220px;z-index:1000;')
+          // Sync Status Widget
+          .card#sync-status-widget(style='position:fixed;top:90px;left:30px;width:220px;z-index:1000;')
+            .card-header#sync-status-indicator.bg-success.text-white.text-center
+              span.fa.fa-refresh(style='margin-right:5px;') Sync Status
+            .card-body.p-2
+              ul.list-unstyled.mb-0
+                li.mb-2
+                  span.fa.fa-database.text-info(style='margin-right:6px;')
+                  | Explorer Block:
+                  span#sync-explorer-block.float-right -
+                li.mb-2
+                  span.fa.fa-cube.text-primary(style='margin-right:6px;')
+                  | RPC Block:
+                  span#sync-rpc-block.float-right -
+                li.mb-2
+                  span.fa.fa-minus-circle.text-danger(style='margin-right:6px;')
+                  | Difference:
+                  span#sync-diff.float-right -
+                li.mb-2
+                  span.fa.fa-percent.text-success(style='margin-right:6px;')
+                  | % Synced:
+                  span#sync-percent.float-right -
+          // Node Status Sidebar Widget
+          .card#node-status-widget(style='position:fixed;top:340px;left:30px;width:220px;z-index:1000;')
             .card-header.bg-success.text-white.text-center
               span.fa.fa-signal(style='margin-right:5px;') Node Status
             .card-body.p-2

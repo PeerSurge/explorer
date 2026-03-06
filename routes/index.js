@@ -1,3 +1,38 @@
+// API: Sync status indicator
+router.get('/api/sync-status', async function(req, res) {
+  const lib = require('../lib/explorer');
+  const Stats = require('../models/stats');
+  let explorerBlock = null;
+  let rpcBlock = null;
+  let diff = null;
+  let percent = null;
+  // Get explorer block (last indexed)
+  try {
+    const stats = await Stats.findOne({coin: require('../lib/settings').coin});
+    if (stats && typeof stats.last === 'number') {
+      explorerBlock = stats.last;
+    }
+  } catch (e) {
+    explorerBlock = null;
+  }
+  // Get RPC block
+  await new Promise(resolve => {
+    lib.get_blockcount(function(count) {
+      rpcBlock = (typeof count === 'number') ? count : null;
+      resolve();
+    });
+  });
+  if (explorerBlock !== null && rpcBlock !== null && rpcBlock > 0) {
+    diff = rpcBlock - explorerBlock;
+    percent = ((explorerBlock / rpcBlock) * 100).toFixed(2);
+  }
+  res.json({
+    explorer_block: explorerBlock,
+    rpc_block: rpcBlock,
+    difference: diff,
+    percent_synced: percent
+  });
+});
 // API: Explorer version, commit hash, Peercoin RPC version
 router.get('/api/version', async function(req, res) {
   const lib = require('../lib/explorer');
