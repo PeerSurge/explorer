@@ -132,11 +132,6 @@ html
             a.nav-link(href='/')
               span.fa.fa-search
               span.menu-text #{settings.locale.menu_explorer}
-          if settings.heavy == true
-            li#reward
-              a.nav-link(href='/reward')
-                span.fa.fa-star
-                span.menu-text #{settings.locale.menu_reward}
           if settings.display.movement == true
             li#movement
               a.nav-link.loading(href='/movement')
