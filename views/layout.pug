@@ -162,113 +162,94 @@ html
               a.nav-link(href='/info')
                 span.fa.fa-info-circle
                 span.menu-text #{settings.locale.menu_api}
-    .col-md-12
-      .row.text-center.d-flex.justify-content-center
-        .col-md-2
-          .card.card-default.d-none.d-md-block.d-block
-            .card-header
-              if settings.nethash_units == 'K'
-                strong #{settings.locale.network} (KH/s)
-              else if settings.nethash_units == 'M'
-                strong #{settings.locale.network} (MH/s)
-              else if settings.nethash_units == 'G'
-                strong #{settings.locale.network} (GH/s)
-              else if settings.nethash_units == 'T'
-                strong #{settings.locale.network} (TH/s)
-              else if settings.nethash_units == 'P'
-                strong #{settings.locale.network} (PH/s)
-              else if settings.nethash_units == 'H'
-                strong #{settings.locale.network} (H/s)
-            .card-body
-              #hashratecard
-                span.header-icons.fa.fa-gears
-                if settings.index.difficulty == 'Hybrid'
-                  label#hashrate -
-                  <br>
-                  label#lblX1
-                else
-                  label#hashrate -
-        .col-md-2
-          .card.card-default.d-none.d-md-block.d-block
-            .card-header
-              strong #{settings.locale.difficulty}
-            .card-body
-              #difficultycard
-                span.header-icons.fa.fa-sliders
-                if settings.index.difficulty == 'Hybrid'
-                  label#difficulty -
-                  <br>
-                  label#difficultyHybrid -
-                else
-                  label#difficulty -
-        
-        .col-md-2.col-sm-12
-            img(src=settings.logo, style='margin-top:-15px;height:128px;')
-        .col-md-2
-          .card.card-default.d-none.d-md-block.d-block
-            .card-header
-              strong #{settings.locale.ex_supply} (#{settings.symbol})
-            .card-body
-              #supplycard
-                span.header-icons.fa.fa-pie-chart
-                if settings.index.difficulty == 'Hybrid'
-                  label#supply -
-                  <br>
-                  label#lblX1
-                else
-                  label#supply -
-                if settings.index.show_market_cap == true && settings.index.show_market_cap_over_price != true  
-                  <br>  
-                  label ( 
-                  label#marketCap - 
-                  label )
-        .col-md-2
-          .card.card-default.d-none.d-md-block.d-block
-            if settings.index.show_market_cap != true || settings.index.show_market_cap_over_price != true
-              .card-header
-                strong #{settings.markets.exchange} Price
-              .card-body
-                #pricecard
-                  span.header-icons.fa.fa-rocket
-
-          if settings.index.show_market_cap == true && settings.index.show_market_cap_over_price == true
-            .card-header
-              strong Market Cap
-            .card-body
-              label#marketCap -
-
-      .row.text-center(style='margin-top:10px;margin-bottom:20px;')
-        form.form-inline.col-12.d-flex.justify-content-center(method='post', action='/search')
-          #index-search.form-group.d-flex.justify-content-center
-            input.form-control(type='text', name='search', placeholder=settings.locale.ex_search_message, style='min-width:80%;margin-right:5px;')
-            button.btn.btn-success(type='submit') #{settings.locale.ex_search_button}
-    block content
-    div(class=footerClasses, role='navigation')
-      .col-md-4.navbar-nav
-        if settings.display.twitter || settings.display.facebook || settings.display.googleplus || settings.display.youtube
-          ul.nav.justify-content-left
-            if settings.display.twitter
-              li.pull-left
-                a#twitter-icon.nav-link.social-link(href="https://twitter.com/"+settings.twitter, target='_blank')
-                  span.glyphicon.fa.fa-twitter
-            if settings.display.facebook
-              li.pull-left
-                a#facebook-icon.nav-link.social-link(href="https://www.facebook.com/"+settings.facebook, target='_blank')
-                  span.glyphicon.fa.fa-facebook
-            if settings.display.googleplus
-              li.pull-left
-                a#googleplus-icon.nav-link.social-link(href="https://plus.google.com/"+settings.googleplus, target='_blank')
-                  span.glyphicon.fa.fa-google-plus
-            if settings.display.youtube
-              li.pull-left
-                a#youtube-icon.nav-link.social-link(href="https://www.youtube.com/channel/"+settings.youtube, target='_blank')
-                  span.glyphicon.fa.fa-youtube
-      .col-md-4.navbar-nav
-        ul.nav.justify-content-center
-          li.text-center(style='margin-left:80px;margin-right:80px;')
-            p(style='')
-              a.nav-link.poweredby(href='https://github.com/peersurge/explorer', target='_blank') Powered by PeerSurge Explorer v#{settings.iquidus_version}
-      .col-md-4.navbar-nav
-        ui.nav.justify-content-end
-          label#lblBlockcount.badge.badge-pill.nav-link
-          label#lblConnections.badge.badge-pill.nav-link
+    // Node Status Sidebar Widget
+    .container-fluid
+      .row
+        .col-md-2.d-none.d-md-block
+          .card#node-status-widget(style='position:fixed;top:90px;left:30px;width:220px;z-index:1000;')
+            .card-header.bg-success.text-white.text-center
+              span.fa.fa-signal(style='margin-right:5px;') Node Status
+            .card-body.p-2
+              ul.list-unstyled.mb-0
+                li.mb-2
+                  span.fa.fa-bolt.text-warning(style='margin-right:6px;')
+                  | PoS Diff:
+                  span#node-pos-diff.float-right -
+                li.mb-2
+                  span.fa.fa-cube.text-info(style='margin-right:6px;')
+                  | PoW Diff:
+                  span#node-pow-diff.float-right -
+                li.mb-2
+                  span.fa.fa-gears.text-secondary(style='margin-right:6px;')
+                  | Hashrate:
+                  span#node-hashrate.float-right -
+                li.mb-2
+                  span.fa.fa-link.text-primary(style='margin-right:6px;')
+                  | Connections:
+                  span#node-connections.float-right -
+                li.mb-2
+                  span.fa.fa-cubes.text-success(style='margin-right:6px;')
+                  | Block Height:
+                  span#node-blockcount.float-right -
+                li.mb-2
+                  span.fa.fa-pie-chart.text-danger(style='margin-right:6px;')
+                  | Supply:
+                  span#node-supply.float-right -
+        .col-md-8.offset-md-2.col-12
+          // ...existing code for main content and search bar...
+          .row.text-center(style='margin-top:10px;margin-bottom:20px;')
+            form.form-inline.col-12.d-flex.justify-content-center(method='post', action='/search')
+              #index-search.form-group.d-flex.justify-content-center
+                input.form-control(type='text', name='search', placeholder=settings.locale.ex_search_message, style='min-width:80%;margin-right:5px;')
+                button.btn.btn-success(type='submit') #{settings.locale.ex_search_button}
+    script.
+      $(document).ready(function(){
+        $('##{active}').addClass('active');
+        function update_stats(){
+          $.ajax({url: '/ext/summary', success: function(json){
+            var d = json.data[0];
+            // For legacy fallback
+            var pos = d.difficulty_pos !== undefined ? d.difficulty_pos : (d.difficultyHybrid || '-');
+            var pow = d.difficulty_pow !== undefined ? d.difficulty_pow : (d.difficulty || '-');
+            var hashrate = d.hashrate !== undefined ? d.hashrate : '-';
+            var connections = d.connections !== undefined ? d.connections : '-';
+            var blockcount = d.blockcount !== undefined ? d.blockcount : '-';
+            var supply = d.supply !== undefined ? d.supply : '-';
+            // Sidebar widget
+            $('#node-pos-diff').text(pos);
+            $('#node-pow-diff').text(pow);
+            $('#node-hashrate').text(hashrate);
+            $('#node-connections').text(connections);
+            $('#node-blockcount').text(blockcount);
+            $('#node-supply').text(supply);
+            // ...existing code for updating other stats...
+            var supplyString = d.supply;
+            var diffString = d.difficulty;
+            var hashrateString = d.hashrate;
+            if (!isNaN(d.difficulty)) {
+              diffString = parseFloat(d.difficulty).toFixed(2);
+            }
+            if (!isNaN(d.supply)) {
+              supplyString = parseInt(parseFloat(d.supply).toFixed(0)).toLocaleString('en');
+            }
+            if (!isNaN(d.hashrate)) {
+              hashrateString = parseFloat(d.hashrate).toLocaleString('en');
+            }
+            $("#supply").text(supplyString);
+            $("#difficulty").text(diffString);
+            $("#difficultyHybrid").text(d.difficultyHybrid);
+            $("#hashrate").text(hashrateString);
+            $("#lastPrice").text(parseFloat(d.lastPrice).toFixed(8) + ' #{settings.markets.exchange}'.toUpperCase());
+            $("#marketCap").text((parseFloat(d.lastPrice).toFixed(8) * parseInt(parseFloat(d.supply).toFixed(0))).toLocaleString('en') + ' #{settings.markets.exchange}'.toUpperCase());
+            $("#lblConnections").text(d.connections + ' connections');
+            $("#lblBlockcount").text(d.blockcount + ' blocks');
+            $("#lblX1").text(' ');
+          }});
+        }
+        $('.block-last-next').tooltip({
+          animation: true,
+          delay: { hide: 500 },
+        });
+        $('.history-table').dataTable( {
+          searching: false,
+          ordering: false,

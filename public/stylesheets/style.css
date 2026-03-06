@@ -1,3 +1,34 @@
+/* Node Status Sidebar Widget */
+#node-status-widget {
+	box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+	border-radius: 8px;
+	min-width: 200px;
+	max-width: 240px;
+	font-size: 15px;
+	margin-bottom: 20px;
+}
+#node-status-widget .card-header {
+	font-weight: bold;
+	font-size: 1.1em;
+	border-radius: 8px 8px 0 0;
+}
+#node-status-widget ul {
+	margin-bottom: 0;
+}
+#node-status-widget li {
+	padding: 2px 0 2px 0;
+	border-bottom: 1px solid #eee;
+	font-size: 15px;
+	display: flex;
+	align-items: center;
+}
+#node-status-widget li:last-child {
+	border-bottom: none;
+}
+#node-status-widget span.float-right {
+	margin-left: auto;
+	font-weight: bold;
+}
 body {
   padding: 80px 40px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
