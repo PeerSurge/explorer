@@ -35,15 +35,7 @@ db.connect(dbString, function() {
       });
     }
   });  
-  if ( settings.heavy == true ) {
-    db.check_heavy(settings.coin, function(exists){
-      if (exists == false) {
-        console.log('no heavy entry found, creating now..');
-        db.create_heavy(settings.coin, function() {
 
-        });
-      }
-    }); 
   }
 
   var server = app.listen(app.get('port'), '::', function() {

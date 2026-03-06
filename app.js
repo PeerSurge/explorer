@@ -283,7 +283,7 @@ app.set('youtube', settings.youtube);
 app.set('genesis_block', settings.genesis_block);
 app.set('index', settings.index);
 app.set('use_rpc', settings.use_rpc);
-app.set('heavy', settings.heavy);
+
 app.set('lock_during_index', settings.lock_during_index);
 app.set('txcount', settings.txcount);
 app.set('txcount_per_page', settings.txcount_per_page);

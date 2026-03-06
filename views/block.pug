@@ -24,8 +24,7 @@ block content
             th #{settings.locale.height}
             th #{settings.locale.difficulty}
             th #{settings.locale.confirmations}
-            if settings.heavy == true
-              th Vote
+
             th.d-none.d-sm-table-cell.d-table-cell #{settings.locale.size} (kB)
             th.d-none.d-sm-table-cell.d-table-cell #{settings.locale.bits}
             th.d-none.d-sm-table-cell.d-table-cell #{settings.locale.nonce}
@@ -37,8 +36,7 @@ block content
               td=block.height
               td=Number(block.difficulty).toFixed(4)
               td=block.confirmations
-              if settings.heavy == true
-                td=block.vote
+
               td.d-none.d-sm-table-cell.d-table-cell=block_size.toFixed(2)
               td.d-none.d-sm-table-cell.d-table-cell=block.bits
               td.d-none.d-sm-table-cell.d-table-cell=block.nonce
@@ -50,8 +48,7 @@ block content
                 td=block.height
                 td=Number(block.difficulty).toFixed(4)
                 td=block.confirmations
-                if settings.heavy == true
-                  td=block.vote
+
                 td.d-none.d-sm-table-cell.d-table-cell=block_size.toFixed(2)
                 td.d-none.d-sm-table-cell.d-table-cell=block.bits
                 td.d-none.d-sm-table-cell.d-table-cell=block.nonce
@@ -62,8 +59,7 @@ block content
                 td=block.height
                 td=Number(block.difficulty).toFixed(4)
                 td=block.confirmations
-                if settings.heavy == true
-                  td=block.vote
+
                 td.d-none.d-sm-cell.d-table-cell=block_size.toFixed(2)
                 td.d-none.d-sm-table-cell.d-table-cell=block.bits
                 td.d-none.d-sm-table-cell.d-table-cell=block.nonce
