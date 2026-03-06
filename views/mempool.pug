@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  .container.mt-4
+    .row
+      .col-md-8.offset-md-2
+        h2 Mempool
+        p.text-muted Peercoin mempool summary and transaction details.
+        table.table.table-bordered.table-striped.mt-3
+          tbody
+            tr
+              th Number of Transactions
+              td= mempool.count
+            tr
+              th Total Size (bytes)
+              td= mempool.totalSize
+            tr
+              th Total Fee (PPC)
+              td= mempool.totalFee
+        h4.mt-4 Mempool Transactions
+        table.table.table-sm.table-hover
+          thead
+            tr
+              th TxID
+              th Size (bytes)
+              th Fee (PPC)
+              th Fee Rate (PPC/byte)
+          tbody
+            each tx in mempool.txList
+              tr
+                td
+                  a(href='/tx/' + tx.txid)= tx.txid
+                td= tx.size
+                td= tx.fee
+                td= tx.feerate
+        .alert.alert-info.mt-4
+          | For full mempool inspection, use Peercoin RPC commands. This page summarizes the current mempool for convenience.

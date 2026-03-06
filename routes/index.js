@@ -1,3 +1,36 @@
+// Mempool page for Peercoin
+router.get('/mempool', async function(req, res) {
+  const lib = require('../lib/explorer');
+  // Get mempool info and txids
+  let mempoolInfo = await lib.resilientRpcCall('getmempoolinfo', [], {});
+  let mempoolTxids = await lib.resilientRpcCall('getrawmempool', [true], []);
+  // Compose mempool data
+  let txList = [];
+  let totalSize = 0;
+  let totalFee = 0;
+  if (Array.isArray(mempoolTxids)) {
+    // Old-style: just txids
+    txList = mempoolTxids.map(txid => ({ txid, size: '-', fee: '-', feerate: '-' }));
+  } else if (typeof mempoolTxids === 'object' && mempoolTxids !== null) {
+    // New-style: verbose
+    txList = Object.entries(mempoolTxids).map(([txid, info]) => {
+      let feerate = (info.fee && info.size) ? (info.fee / info.size).toFixed(8) : '-';
+      totalSize += info.size || 0;
+      totalFee += info.fee || 0;
+      return { txid, size: info.size || '-', fee: info.fee || '-', feerate };
+    });
+  }
+  // Fallback to mempoolInfo size if needed
+  if (!totalSize && mempoolInfo && mempoolInfo.bytes) totalSize = mempoolInfo.bytes;
+  res.render('mempool', {
+    mempool: {
+      count: mempoolInfo.size || txList.length,
+      totalSize,
+      txList,
+      totalFee,
+    }
+  });
+});
 // Chain Parameters page for developers
 router.get('/chain-parameters', async function(req, res) {
   const lib = require('../lib/explorer');

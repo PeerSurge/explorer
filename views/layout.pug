@@ -167,6 +167,11 @@ html
             a.nav-link(href='/chain-parameters')
               span.fa.fa-cogs
               span.menu-text Chain Parameters
+          // Mempool nav link
+          li#mempool
+            a.nav-link(href='/mempool')
+              span.fa.fa-list
+              span.menu-text Mempool
           if settings.display.markets == true
             li#markets
               a.nav-link.loading(href='/markets/'+settings.markets.default)
